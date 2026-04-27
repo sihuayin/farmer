@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter as BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useFarm } from './hooks/useFarm'
 import PreviewPage from './pages/PreviewPage'
 import EditorPage from './pages/EditorPage'
