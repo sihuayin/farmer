@@ -125,6 +125,7 @@ export const en = {
 
   // Panorama
   panorama: {
+    title: 'Farm Panorama',
     farmLegend: 'Farm Legend',
     cropPlots: 'Crop Plots',
     livestockPens: 'Livestock Pens',
@@ -149,6 +150,29 @@ export const en = {
     hydration: 'Hydration',
     growth: 'Growth',
     futureSpace: 'Future Space',
+    weather: 'Sunny, 22°C',
+    harvestable: 'Harvestable',
+    more: 'more',
+    zoomIn: 'Zoom In',
+    zoomOut: 'Zoom Out',
+    resetView: 'Reset View',
+    editSections: 'Edit Sections',
+    editor: {
+      title: 'Section Editor',
+      subtitle: 'Configure farm sections and zones',
+      addSection: 'Add Section',
+    },
+    actions: {
+      viewDetails: 'View Details →',
+    },
+    status: {
+      ready: 'Harvest Ready',
+      growing: 'Growing',
+      seedling: 'Seedling',
+      active: 'Active',
+      hungry: 'Hungry',
+      empty: 'Empty',
+    },
   },
 
   // Tasks

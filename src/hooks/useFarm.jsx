@@ -6,6 +6,31 @@ import { createContext, useContext, useState, useEffect, useCallback, useRef } f
 
 export const TICK_INTERVAL = 1000 // 计时器 tick 间隔 (ms)
 
+export const GRID_SIZE = 12
+export const TILE_WIDTH = 64
+export const TILE_HEIGHT = 32
+
+export const DEFAULT_SECTIONS = [
+  { id: 'crop',     name: { en: 'Crop Field',    zh: '作物种植区' }, rect: [0, 0, 6, 6], color: '#4CAF50', icon: 'eco',         type: 'crop' },
+  { id: 'livestock',name: { en: 'Livestock Area',zh: '畜牧养殖区' }, rect: [6, 0, 6, 6], color: '#FF9800', icon: 'pets',        type: 'livestock' },
+  { id: 'utility',  name: { en: 'Utility Zone',  zh: '综合功能区' }, rect: [0, 6, 6, 6], color: '#2196F3', icon: 'handyman',     type: 'utility' },
+  { id: 'reserved', name: { en: 'Reserved Area', zh: '预留空白区' }, rect: [6, 6, 6, 6], color: '#9E9E9E', icon: 'grid_on',     type: 'empty' },
+]
+
+export function gridToScreen(gx, gy, originX, originY) {
+  return {
+    x: originX + (gx - gy) * TILE_WIDTH / 2,
+    y: originY + (gx + gy) * TILE_HEIGHT / 2,
+  }
+}
+
+export function getSectionAt(gx, gy, sections) {
+  return sections.find((s) => {
+    const [rx, ry, rw, rh] = s.rect
+    return gx >= rx && gx < rx + rw && gy >= ry && gy < ry + rh
+  }) || null
+}
+
 export const CROP_CONFIG = {
   carrot: {
     name: 'Heritage Carrots',
@@ -84,6 +109,10 @@ function createInitialPlot(overrides = {}) {
     plantedAt: null,
     lastWatered: null,
     lastFertilized: null,
+    gridX: 0,
+    gridY: 0,
+    gridW: 1,
+    gridH: 1,
     ...overrides,
   }
 }
@@ -100,26 +129,30 @@ function createInitialPen(overrides = {}) {
     lastProductionAt: null,
     lastFedAt: null,
     status: 'empty',
+    gridX: 0,
+    gridY: 0,
+    gridW: 1,
+    gridH: 1,
     ...overrides,
   }
 }
 
 const INITIAL_PLOTS = [
-  createInitialPlot({ id: 'p1', name: 'Plot A-1', cropType: 'carrot', growthPercent: 65, status: 'growing', plantedAt: Date.now() - 9 * 60 * 1000, lastWatered: Date.now() - 5 * 60 * 1000 }),
-  createInitialPlot({ id: 'p2', name: 'Plot B-4', cropType: 'tomato', growthPercent: 92, status: 'growing', plantedAt: Date.now() - 18 * 60 * 1000, lastWatered: Date.now() - 2 * 60 * 1000 }),
-  createInitialPlot({ id: 'p3', name: 'Plot C-2', cropType: 'cabbage', growthPercent: 30, status: 'growing', plantedAt: Date.now() - 3 * 60 * 1000 }),
-  createInitialPlot({ id: 'p4', name: 'Plot D-1', status: 'empty' }),
-  createInitialPlot({ id: 'p5', name: 'Plot D-2', status: 'empty' }),
-  createInitialPlot({ id: 'p6', name: 'Plot E-1', status: 'empty' }),
-  createInitialPlot({ id: 'p7', name: 'Plot E-2', status: 'empty' }),
-  createInitialPlot({ id: 'p8', name: 'Plot F-1', status: 'empty' }),
+  createInitialPlot({ id: 'p1', name: 'Plot A-1', cropType: 'carrot', growthPercent: 65, status: 'growing', plantedAt: Date.now() - 9 * 60 * 1000, lastWatered: Date.now() - 5 * 60 * 1000, gridX: 1, gridY: 1 }),
+  createInitialPlot({ id: 'p2', name: 'Plot B-4', cropType: 'tomato', growthPercent: 92, status: 'growing', plantedAt: Date.now() - 18 * 60 * 1000, lastWatered: Date.now() - 2 * 60 * 1000, gridX: 2, gridY: 2 }),
+  createInitialPlot({ id: 'p3', name: 'Plot C-2', cropType: 'cabbage', growthPercent: 30, status: 'growing', plantedAt: Date.now() - 3 * 60 * 1000, gridX: 3, gridY: 1 }),
+  createInitialPlot({ id: 'p4', name: 'Plot D-1', status: 'empty', gridX: 1, gridY: 3 }),
+  createInitialPlot({ id: 'p5', name: 'Plot D-2', status: 'empty', gridX: 2, gridY: 3 }),
+  createInitialPlot({ id: 'p6', name: 'Plot E-1', status: 'empty', gridX: 3, gridY: 2 }),
+  createInitialPlot({ id: 'p7', name: 'Plot E-2', status: 'empty', gridX: 4, gridY: 1 }),
+  createInitialPlot({ id: 'p8', name: 'Plot F-1', status: 'empty', gridX: 4, gridY: 2 }),
 ]
 
 const INITIAL_PENS = [
-  createInitialPen({ id: 'pen1', name: 'Highland Meadow', livestockType: 'sheep', count: 12, healthPercent: 94, hungerPercent: 20, accumulatedProduction: 18.5, lastProductionAt: Date.now() - 5 * 60 * 1000, status: 'active' }),
-  createInitialPen({ id: 'pen2', name: 'Sunrise Coop', livestockType: 'chicken', count: 24, healthPercent: 88, hungerPercent: 72, accumulatedProduction: 42, lastProductionAt: Date.now() - 3 * 60 * 1000, status: 'hungry' }),
-  createInitialPen({ id: 'pen3', name: 'Pen C', status: 'locked' }),
-  createInitialPen({ id: 'pen4', name: 'Pen D', status: 'locked' }),
+  createInitialPen({ id: 'pen1', name: 'Highland Meadow', livestockType: 'sheep', count: 12, healthPercent: 94, hungerPercent: 20, accumulatedProduction: 18.5, lastProductionAt: Date.now() - 5 * 60 * 1000, status: 'active', gridX: 7, gridY: 2, gridW: 2, gridH: 2 }),
+  createInitialPen({ id: 'pen2', name: 'Sunrise Coop', livestockType: 'chicken', count: 24, healthPercent: 88, hungerPercent: 72, accumulatedProduction: 42, lastProductionAt: Date.now() - 3 * 60 * 1000, status: 'hungry', gridX: 7, gridY: 5, gridW: 2, gridH: 2 }),
+  createInitialPen({ id: 'pen3', name: 'Pen C', status: 'locked', gridX: 8, gridY: 2 }),
+  createInitialPen({ id: 'pen4', name: 'Pen D', status: 'locked', gridX: 8, gridY: 5 }),
 ]
 
 const INITIAL_TASKS = [
@@ -153,6 +186,7 @@ const DEFAULT_STATE = {
   unlockedPenCount: 2,
   createdAt: Date.now(),
   updatedAt: Date.now(),
+  sections: DEFAULT_SECTIONS,
 }
 
 // ============================================================
@@ -201,7 +235,32 @@ function saveToStorage(state) {
 function loadFromStorage() {
   try {
     const raw = localStorage.getItem('harvesthub_farm')
-    if (raw) return JSON.parse(raw)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      // Migration: add gridX/Y/W/H to legacy plots/pens
+      if (parsed.plots && !parsed.plots[0]?.hasOwnProperty('gridX')) {
+        const cropSection = DEFAULT_SECTIONS.find((s) => s.id === 'crop')
+        const livestockSection = DEFAULT_SECTIONS.find((s) => s.id === 'livestock')
+        parsed.plots = parsed.plots.map((plot, i) => ({
+          ...plot,
+          gridX: plot.gridX ?? (i % 6),
+          gridY: plot.gridY ?? Math.floor(i / 6),
+          gridW: 1,
+          gridH: 1,
+        }))
+        parsed.pens = (parsed.pens || []).map((pen, i) => ({
+          ...pen,
+          gridX: pen.gridX ?? (6 + (i % 6)),
+          gridY: pen.gridY ?? Math.floor(i / 2),
+          gridW: 1,
+          gridH: 1,
+        }))
+      }
+      if (!parsed.sections) {
+        parsed.sections = DEFAULT_SECTIONS
+      }
+      return parsed
+    }
   } catch (e) {
     console.warn('Failed to load farm state:', e)
   }
@@ -454,7 +513,37 @@ export function FarmProvider({ children }) {
     })
   }, [scheduleSave])
 
-  const value = { state, actions: { waterPlot, fertilizePlot, harvestPlot, plantPlot, feedLivestock, collectProduction, sellInventoryItem, toggleTask, unlockPen, buySeed } }
+  const updatePlot = useCallback((plotId, updates) => {
+    setState((prev) => {
+      const plots = prev.plots.map((p) =>
+        p.id === plotId ? { ...p, ...updates } : p
+      )
+      const next = { ...prev, plots }
+      scheduleSave(next)
+      return next
+    })
+  }, [scheduleSave])
+
+  const updatePen = useCallback((penId, updates) => {
+    setState((prev) => {
+      const pens = prev.pens.map((p) =>
+        p.id === penId ? { ...p, ...updates } : p
+      )
+      const next = { ...prev, pens }
+      scheduleSave(next)
+      return next
+    })
+  }, [scheduleSave])
+
+  const updateSections = useCallback((newSections) => {
+    setState((prev) => {
+      const next = { ...prev, sections: newSections }
+      scheduleSave(next)
+      return next
+    })
+  }, [scheduleSave])
+
+  const value = { state, actions: { waterPlot, fertilizePlot, harvestPlot, plantPlot, feedLivestock, collectProduction, sellInventoryItem, toggleTask, unlockPen, buySeed, updatePlot, updatePen, updateSections } }
 
   return <FarmContext.Provider value={value}>{children}</FarmContext.Provider>
 }

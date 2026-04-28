@@ -125,6 +125,7 @@ export const zh = {
 
   // Panorama
   panorama: {
+    title: '农场全景',
     farmLegend: '农场图例',
     cropPlots: '作物区',
     livestockPens: '畜牧区',
@@ -149,6 +150,29 @@ export const zh = {
     hydration: '水分',
     growth: '生长',
     futureSpace: '预留空间',
+    weather: '晴朗, 22°C',
+    harvestable: '可收获',
+    more: '更多',
+    zoomIn: '放大',
+    zoomOut: '缩小',
+    resetView: '重置视角',
+    editSections: '编辑板块',
+    editor: {
+      title: '板块编辑器',
+      subtitle: '配置农场区域和分区',
+      addSection: '添加板块',
+    },
+    actions: {
+      viewDetails: '查看详情 →',
+    },
+    status: {
+      ready: '可收获',
+      growing: '生长中',
+      seedling: '幼苗',
+      active: '活跃',
+      hungry: '饥饿',
+      empty: '空闲',
+    },
   },
 
   // Tasks
