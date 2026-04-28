@@ -1,0 +1,177 @@
+export const en = {
+  // App
+  appName: 'HarvestHub',
+  farmName: 'Farmstead Alpha',
+  farmSince: 'Tending since 2024',
+
+  // Nav
+  nav: {
+    overview: 'Overview',
+    crops: 'Crops',
+    livestock: 'Livestock',
+    inventory: 'Inventory',
+    panorama: 'Panorama',
+    settings: 'Settings',
+    support: 'Support',
+    planNewPlot: 'Plan New Plot',
+  },
+
+  // TopAppBar
+  topbar: {
+    searchPlaceholder: 'Search farm...',
+    sunny: 'Sunny',
+    calendar: 'Calendar',
+  },
+
+  // Overview
+  overview: {
+    quickStats: 'Quick Stats',
+    harvestReadiness: 'Harvest Readiness',
+    animalHappiness: 'Animal Happiness',
+    irrigationSupply: 'Irrigation Supply',
+    pendingTasks: 'Pending Tasks',
+    theHomestead: 'The Homestead',
+    sector: 'Sector A-4',
+    weather: 'Sunny, 72°F',
+    due: 'Due',
+    overdue: 'Overdue',
+    completed: 'Completed',
+  },
+
+  // Crops
+  crops: {
+    title: 'Active Crop Plots',
+    subtitle: 'Manage your seasonal yields across {n} active plots.',
+    waterLevel: 'Water level',
+    fertilizer: 'Fertilizer',
+    units: 'units',
+    growthMeter: 'Growth Meter',
+    harvestIn: 'Harvest in {n} min',
+    emptySlot: 'New Plot Available',
+    clickToPlant: 'Click to plant',
+    status: {
+      empty: 'Empty Slot',
+      growing: 'Growing',
+      ready: 'Harvest Ready',
+      healthy: 'Healthy',
+      thirsty: 'Thirsty',
+      prime: 'Prime',
+    },
+    actions: {
+      water: 'Water',
+      fertilize: 'Fertilize',
+      harvest: 'Harvest Now',
+      plant: 'Plant Crop',
+    },
+    plantModal: {
+      title: 'Plant Crop — {name}',
+      noSeeds: 'No seeds available. Buy more from the store!',
+      growth: '{n} min growth',
+      cancel: 'Cancel',
+    },
+    harvest: {
+      bonus: '+{n} {emoji} +{pts} pts',
+    },
+    plantedAgo: 'Planted {n} min ago',
+  },
+
+  // Livestock
+  livestock: {
+    title: 'Livestock Monitor',
+    subtitle: 'Manage and monitor the health and production of your farm animals.',
+    allPens: 'All Pens',
+    buyLivestock: 'Buy Livestock',
+    healthLevel: 'Health Level',
+    hunger: 'Hunger',
+    production: 'Production',
+    feed: 'Feed',
+    collect: 'Collect',
+    ready: 'READY',
+    locked: 'Locked',
+    empty: 'Empty',
+    pen: 'Pen',
+    unlock: 'Unlock',
+    unlockCost: '({cost} pts)',
+    noLivestock: 'No livestock assigned',
+    woolKg: 'kg Ready',
+    eggsItems: 'items',
+    sheep: 'Merino Sheep',
+    hens: 'Leghorn Hens',
+    stableHealth: 'Stable Health',
+    thriving: 'Thriving',
+    hungry: 'Hungry',
+  },
+
+  // Inventory
+  inventory: {
+    title: 'Farm Inventory',
+    subtitle: 'Organize your seeds, tools, and harvest. Manage stocks to ensure your farm stays productive.',
+    allItems: 'All Items',
+    seeds: 'Seeds',
+    produce: 'Produce',
+    tools: 'Tools',
+    resources: 'Resources',
+    storageCapacity: 'Storage Capacity',
+    irrigationSupply: 'Irrigation Supply',
+    farmEnergy: 'Farm Energy',
+    tier: 'Tier {n}',
+    fresh: 'Fresh',
+    sellAll: 'Sell All',
+    buy: 'Buy',
+    equip: 'Equip',
+    noStock: 'No stock',
+    marketPrice: 'Market Price: +15% Today',
+  },
+
+  // Panorama
+  panorama: {
+    farmLegend: 'Farm Legend',
+    cropPlots: 'Crop Plots',
+    livestockPens: 'Livestock Pens',
+    eventPatio: 'Event Patio',
+    veggiesGrains: 'Vegetables & Grains',
+    sheepPoultry: 'Sheep & Poultry',
+    diningPicnic: 'Dining & Picnic',
+    dailyGoal: 'Daily Goal',
+    tended: 'Tended',
+    scheduleHarvest: 'Schedule Harvest',
+    zoneDetails: 'Zone Details',
+    northField: 'North Field',
+    animalCoop: 'Animal Coop',
+    patioDining: 'Patio & Dining',
+    harvestReady: 'Harvest Ready',
+    currentCrop: 'Current Crop: Heirloom Carrots',
+    capacity: 'Capacity',
+    today: 'Today',
+    scheduled: 'Scheduled',
+    readyForPicnic: 'Ready for Picnic',
+    nextEvent: 'Next',
+    hydration: 'Hydration',
+    growth: 'Growth',
+    futureSpace: 'Future Space',
+  },
+
+  // Tasks
+  tasks: {
+    waterSectorB: 'Water Sector B',
+    feedChickens: 'Feed Chickens',
+    restockFertilizer: 'Restock Fertilizer',
+    harvestTomatoes: 'Harvest Tomatoes',
+  },
+
+  // Common
+  common: {
+    points: 'pts',
+    cancel: 'Cancel',
+    save: 'Save',
+    delete: 'Delete',
+    confirm: 'Confirm',
+    locked: 'Locked',
+    empty: 'Empty',
+  },
+
+  // Mobile
+  mobile: {
+    desktopOnly: 'Please use a desktop browser to edit your farm.',
+  },
+}

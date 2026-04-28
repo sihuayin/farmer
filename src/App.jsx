@@ -1,30 +1,27 @@
 import { HashRouter as BrowserRouter, Routes, Route } from 'react-router-dom'
-import { useFarm } from './hooks/useFarm'
-import PreviewPage from './pages/PreviewPage'
-import EditorPage from './pages/EditorPage'
+import { FarmProvider } from './hooks/useFarm'
+import { I18nProvider } from './i18n'
+import MainLayout from './components/layout/MainLayout'
+import OverviewPage from './pages/harvesthub/OverviewPage'
+import CropsPage from './pages/harvesthub/CropsPage'
+import LivestockPage from './pages/harvesthub/LivestockPage'
+import InventoryPage from './pages/harvesthub/InventoryPage'
+import PanoramaPage from './pages/harvesthub/PanoramaPage'
 
 export default function App() {
-  const { farm, updateCell, clearFarm, updateFarmName } = useFarm()
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={<PreviewPage farm={farm} updateFarmName={updateFarmName} />}
-        />
-        <Route
-          path="/editor"
-          element={
-            <EditorPage
-              farm={farm}
-              updateCell={updateCell}
-              clearFarm={clearFarm}
-              updateFarmName={updateFarmName}
-            />
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <I18nProvider>
+      <FarmProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MainLayout><OverviewPage /></MainLayout>} />
+            <Route path="/crops" element={<MainLayout><CropsPage /></MainLayout>} />
+            <Route path="/livestock" element={<MainLayout><LivestockPage /></MainLayout>} />
+            <Route path="/inventory" element={<MainLayout><InventoryPage /></MainLayout>} />
+            <Route path="/panorama" element={<MainLayout><PanoramaPage /></MainLayout>} />
+          </Routes>
+        </BrowserRouter>
+      </FarmProvider>
+    </I18nProvider>
   )
 }
