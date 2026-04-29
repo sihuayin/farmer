@@ -12,7 +12,7 @@ export default function TopAppBar() {
   const nextLang = lang === 'en' ? 'zh' : 'en'
 
   return (
-    <header className="bg-stone-50/80 dark:bg-stone-900/80 backdrop-blur-md sticky top-0 z-50 border-b border-stone-200 dark:border-stone-800 shadow-sm shadow-emerald-900/5 flex justify-between items-center w-full px-6 h-16 md:ml-64">
+    <header className="bg-stone-50/80 dark:bg-stone-900/80 backdrop-blur-md sticky top-0 z-50 border-b border-stone-200 dark:border-stone-800 shadow-sm shadow-emerald-900/5 flex justify-between items-center px-6 h-16 md:ml-64 md:w-[calc(100vw-16rem)]">
       <div className="flex items-center gap-6">
         <span className="text-xl font-bold text-emerald-900 dark:text-emerald-100 tracking-tight">{t('appName')}</span>
         <div className="relative group hidden lg:block">
