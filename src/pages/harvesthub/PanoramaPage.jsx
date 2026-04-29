@@ -111,8 +111,8 @@ export default function PanoramaPage() {
         </div>
       </div>
 
-      {/* Isometric Map Container */}
-      <div className="bg-stone-100 rounded-[2rem] border-2 border-stone-200 shadow-xl overflow-hidden relative mb-6" style={{ height: 520 }}>
+      {/* 2D Map Container — fills viewport */}
+      <div className="rounded-2xl border-2 border-stone-200 shadow-xl overflow-hidden relative mb-6" style={{ height: 'calc(100vh - 9rem)' }}>
         {/* Section Legend - top left */}
         <div className="absolute top-4 left-4 z-20 bg-white/90 backdrop-blur-sm rounded-2xl p-3 shadow-lg border border-stone-200">
           <p className="text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-2">{t('panorama.farmLegend')}</p>

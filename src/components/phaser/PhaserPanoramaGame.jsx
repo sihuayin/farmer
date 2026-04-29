@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Game } from 'phaser'
 import PanoramaScene from '../../phaser/PanoramaScene'
+import { MAP_SIZE } from '../../hooks/useFarm'
 
 export default function PhaserPanoramaGame({ plots, pens, sections, onCellClick, containerRef }) {
   const gameRef = useRef(null)
@@ -12,11 +13,7 @@ export default function PhaserPanoramaGame({ plots, pens, sections, onCellClick,
 
     const parent = innerRef.current
     const canvasWidth = parent.clientWidth || 800
-    const canvasHeight = parent.clientHeight || 500
-    // Center the 12×12 grid's bounding box in the canvas
-    const cameraOffsetX = Math.round(canvasWidth / 2)
-    // grid Y range is originY..originY+GRID_SIZE*TILE_HEIGHT = 80..464 (384px). Center it in canvas.
-    const cameraOffsetY = Math.round(canvasHeight / 2 + 192 - 80) // 258 + 192 - 80 = 370
+    const canvasHeight = parent.clientHeight || 600
 
     let game
 
@@ -42,7 +39,14 @@ export default function PhaserPanoramaGame({ plots, pens, sections, onCellClick,
       if (scene && scene._ready) {
         sceneRef.current = scene
         scene.initWithData(plots, pens, sections)
-        scene.createCameraScroll(cameraOffsetX, cameraOffsetY)
+
+        // Set up camera: center the 768x768 map in the viewport
+        const cam = scene.cameras.main
+        const offsetX = canvasWidth / 2 - MAP_SIZE / 2
+        const offsetY = canvasHeight / 2 - MAP_SIZE / 2
+        // scrollX/scrollY are the NEGATIVE of the canvas offset: world (0,0) → canvas (offsetX, offsetY)
+        cam.scrollX = -offsetX
+        cam.scrollY = -offsetY
 
         if (containerRef?.current !== scene) {
           containerRef.current = scene
@@ -94,5 +98,5 @@ export default function PhaserPanoramaGame({ plots, pens, sections, onCellClick,
     }
   }, [sections])
 
-  return <div ref={innerRef} style={{ width: '100%', height: '100%', minHeight: 400 }} />
+  return <div ref={innerRef} style={{ width: '100%', height: '100%' }} />
 }
