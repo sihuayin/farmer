@@ -110,9 +110,9 @@ function SectionCard({ section, onUpdate, onDelete, onClose, t }) {
             </div>
           </div>
 
-          {/* Rect coordinates */}
+          {/* Rect coordinates (pixels) */}
           <div>
-            <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1">Rect [x, y, w, h]</label>
+            <label className="text-[10px] font-bold text-stone-500 uppercase block mb-1">Rect [x, y, w, h] (px)</label>
             <div className="flex gap-2">
               {['x', 'y', 'w', 'h'].map((k, i) => (
                 <div key={k} className="flex-1">
@@ -120,7 +120,8 @@ function SectionCard({ section, onUpdate, onDelete, onClose, t }) {
                   <input
                     type="number"
                     min="0"
-                    max="12"
+                    max="768"
+                    step="64"
                     className="w-full bg-stone-50 border border-stone-200 rounded-lg px-2 py-1.5 text-sm text-stone-800 text-center"
                     value={form.rect[i]}
                     onChange={(e) => {

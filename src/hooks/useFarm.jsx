@@ -6,30 +6,21 @@ import { createContext, useContext, useState, useEffect, useCallback, useRef } f
 
 export const TICK_INTERVAL = 1000 // 计时器 tick 间隔 (ms)
 
-export const GRID_SIZE = 12
-export const TILE_WIDTH = 64
-export const TILE_HEIGHT = 32
+// ============================================================
+// 地图尺寸常量（像素坐标）
+// ============================================================
+
+export const SECTION_SIZE = 384  // 每个板块边长（像素）
+export const MAP_SIZE = SECTION_SIZE * 2  // 总地图尺寸 768×768px
 
 export const DEFAULT_SECTIONS = [
-  { id: 'crop',     name: { en: 'Crop Field',    zh: '作物种植区' }, rect: [0, 0, 6, 6], color: '#4CAF50', icon: 'eco',         type: 'crop' },
-  { id: 'livestock',name: { en: 'Livestock Area',zh: '畜牧养殖区' }, rect: [6, 0, 6, 6], color: '#FF9800', icon: 'pets',        type: 'livestock' },
-  { id: 'utility',  name: { en: 'Utility Zone',  zh: '综合功能区' }, rect: [0, 6, 6, 6], color: '#2196F3', icon: 'handyman',     type: 'utility' },
-  { id: 'reserved', name: { en: 'Reserved Area', zh: '预留空白区' }, rect: [6, 6, 6, 6], color: '#9E9E9E', icon: 'grid_on',     type: 'empty' },
+  { id: 'crop',      name: { en: 'Crop Field',     zh: '作物种植区' }, rect: [0,   0,   SECTION_SIZE, SECTION_SIZE], color: '#4CAF50', icon: 'eco',         type: 'crop' },
+  { id: 'livestock', name: { en: 'Livestock Area', zh: '畜牧养殖区' }, rect: [SECTION_SIZE, 0,   SECTION_SIZE, SECTION_SIZE], color: '#FF9800', icon: 'pets',        type: 'livestock' },
+  { id: 'utility',  name: { en: 'Utility Zone',   zh: '综合功能区' }, rect: [0,   SECTION_SIZE, SECTION_SIZE, SECTION_SIZE], color: '#2196F3', icon: 'handyman',     type: 'utility' },
+  { id: 'reserved', name: { en: 'Reserved Area', zh: '预留空白区' }, rect: [SECTION_SIZE, SECTION_SIZE, SECTION_SIZE, SECTION_SIZE], color: '#9E9E9E', icon: 'grid_on',     type: 'empty' },
 ]
 
-export function gridToScreen(gx, gy, originX, originY) {
-  return {
-    x: originX + (gx - gy) * TILE_WIDTH / 2,
-    y: originY + (gx + gy) * TILE_HEIGHT / 2,
-  }
-}
-
-export function getSectionAt(gx, gy, sections) {
-  return sections.find((s) => {
-    const [rx, ry, rw, rh] = s.rect
-    return gx >= rx && gx < rx + rw && gy >= ry && gy < ry + rh
-  }) || null
-}
+export const CELL_SIZE = 64  // 每个地块格子大小（像素）
 
 export const CROP_CONFIG = {
   carrot: {
@@ -109,10 +100,10 @@ function createInitialPlot(overrides = {}) {
     plantedAt: null,
     lastWatered: null,
     lastFertilized: null,
-    gridX: 0,
-    gridY: 0,
-    gridW: 1,
-    gridH: 1,
+    x: 0,
+    y: 0,
+    w: CELL_SIZE,
+    h: CELL_SIZE,
     ...overrides,
   }
 }
@@ -129,30 +120,30 @@ function createInitialPen(overrides = {}) {
     lastProductionAt: null,
     lastFedAt: null,
     status: 'empty',
-    gridX: 0,
-    gridY: 0,
-    gridW: 1,
-    gridH: 1,
+    x: 0,
+    y: 0,
+    w: CELL_SIZE,
+    h: CELL_SIZE,
     ...overrides,
   }
 }
 
 const INITIAL_PLOTS = [
-  createInitialPlot({ id: 'p1', name: 'Plot A-1', cropType: 'carrot', growthPercent: 65, status: 'growing', plantedAt: Date.now() - 9 * 60 * 1000, lastWatered: Date.now() - 5 * 60 * 1000, gridX: 1, gridY: 1 }),
-  createInitialPlot({ id: 'p2', name: 'Plot B-4', cropType: 'tomato', growthPercent: 92, status: 'growing', plantedAt: Date.now() - 18 * 60 * 1000, lastWatered: Date.now() - 2 * 60 * 1000, gridX: 2, gridY: 2 }),
-  createInitialPlot({ id: 'p3', name: 'Plot C-2', cropType: 'cabbage', growthPercent: 30, status: 'growing', plantedAt: Date.now() - 3 * 60 * 1000, gridX: 3, gridY: 1 }),
-  createInitialPlot({ id: 'p4', name: 'Plot D-1', status: 'empty', gridX: 1, gridY: 3 }),
-  createInitialPlot({ id: 'p5', name: 'Plot D-2', status: 'empty', gridX: 2, gridY: 3 }),
-  createInitialPlot({ id: 'p6', name: 'Plot E-1', status: 'empty', gridX: 3, gridY: 2 }),
-  createInitialPlot({ id: 'p7', name: 'Plot E-2', status: 'empty', gridX: 4, gridY: 1 }),
-  createInitialPlot({ id: 'p8', name: 'Plot F-1', status: 'empty', gridX: 4, gridY: 2 }),
+  createInitialPlot({ id: 'p1', name: 'Plot A-1', cropType: 'carrot', growthPercent: 65, status: 'growing', plantedAt: Date.now() - 9 * 60 * 1000, lastWatered: Date.now() - 5 * 60 * 1000, x: 1 * CELL_SIZE, y: 1 * CELL_SIZE }),
+  createInitialPlot({ id: 'p2', name: 'Plot B-4', cropType: 'tomato', growthPercent: 92, status: 'growing', plantedAt: Date.now() - 18 * 60 * 1000, lastWatered: Date.now() - 2 * 60 * 1000, x: 2 * CELL_SIZE, y: 2 * CELL_SIZE }),
+  createInitialPlot({ id: 'p3', name: 'Plot C-2', cropType: 'cabbage', growthPercent: 30, status: 'growing', plantedAt: Date.now() - 3 * 60 * 1000, x: 3 * CELL_SIZE, y: 1 * CELL_SIZE }),
+  createInitialPlot({ id: 'p4', name: 'Plot D-1', status: 'empty', x: 1 * CELL_SIZE, y: 3 * CELL_SIZE }),
+  createInitialPlot({ id: 'p5', name: 'Plot D-2', status: 'empty', x: 2 * CELL_SIZE, y: 3 * CELL_SIZE }),
+  createInitialPlot({ id: 'p6', name: 'Plot E-1', status: 'empty', x: 3 * CELL_SIZE, y: 2 * CELL_SIZE }),
+  createInitialPlot({ id: 'p7', name: 'Plot E-2', status: 'empty', x: 4 * CELL_SIZE, y: 1 * CELL_SIZE }),
+  createInitialPlot({ id: 'p8', name: 'Plot F-1', status: 'empty', x: 4 * CELL_SIZE, y: 2 * CELL_SIZE }),
 ]
 
 const INITIAL_PENS = [
-  createInitialPen({ id: 'pen1', name: 'Highland Meadow', livestockType: 'sheep', count: 12, healthPercent: 94, hungerPercent: 20, accumulatedProduction: 18.5, lastProductionAt: Date.now() - 5 * 60 * 1000, status: 'active', gridX: 7, gridY: 2, gridW: 2, gridH: 2 }),
-  createInitialPen({ id: 'pen2', name: 'Sunrise Coop', livestockType: 'chicken', count: 24, healthPercent: 88, hungerPercent: 72, accumulatedProduction: 42, lastProductionAt: Date.now() - 3 * 60 * 1000, status: 'hungry', gridX: 7, gridY: 5, gridW: 2, gridH: 2 }),
-  createInitialPen({ id: 'pen3', name: 'Pen C', status: 'locked', gridX: 8, gridY: 2 }),
-  createInitialPen({ id: 'pen4', name: 'Pen D', status: 'locked', gridX: 8, gridY: 5 }),
+  createInitialPen({ id: 'pen1', name: 'Highland Meadow', livestockType: 'sheep', count: 12, healthPercent: 94, hungerPercent: 20, accumulatedProduction: 18.5, lastProductionAt: Date.now() - 5 * 60 * 1000, status: 'active', x: 7 * CELL_SIZE, y: 2 * CELL_SIZE, w: 2 * CELL_SIZE, h: 2 * CELL_SIZE }),
+  createInitialPen({ id: 'pen2', name: 'Sunrise Coop', livestockType: 'chicken', count: 24, healthPercent: 88, hungerPercent: 72, accumulatedProduction: 42, lastProductionAt: Date.now() - 3 * 60 * 1000, status: 'hungry', x: 7 * CELL_SIZE, y: 5 * CELL_SIZE, w: 2 * CELL_SIZE, h: 2 * CELL_SIZE }),
+  createInitialPen({ id: 'pen3', name: 'Pen C', status: 'locked', x: 8 * CELL_SIZE, y: 2 * CELL_SIZE }),
+  createInitialPen({ id: 'pen4', name: 'Pen D', status: 'locked', x: 8 * CELL_SIZE, y: 5 * CELL_SIZE }),
 ]
 
 const INITIAL_TASKS = [
@@ -237,23 +228,21 @@ function loadFromStorage() {
     const raw = localStorage.getItem('harvesthub_farm')
     if (raw) {
       const parsed = JSON.parse(raw)
-      // Migration: add gridX/Y/W/H to legacy plots/pens
-      if (parsed.plots && !parsed.plots[0]?.hasOwnProperty('gridX')) {
-        const cropSection = DEFAULT_SECTIONS.find((s) => s.id === 'crop')
-        const livestockSection = DEFAULT_SECTIONS.find((s) => s.id === 'livestock')
-        parsed.plots = parsed.plots.map((plot, i) => ({
+      // Migration: convert gridX/Y to pixel x/y/w/h
+      if (parsed.plots && parsed.plots[0]?.hasOwnProperty('gridX') && !parsed.plots[0]?.hasOwnProperty('x')) {
+        parsed.plots = parsed.plots.map((plot) => ({
           ...plot,
-          gridX: plot.gridX ?? (i % 6),
-          gridY: plot.gridY ?? Math.floor(i / 6),
-          gridW: 1,
-          gridH: 1,
+          x: plot.gridX * CELL_SIZE,
+          y: plot.gridY * CELL_SIZE,
+          w: (plot.gridW || 1) * CELL_SIZE,
+          h: (plot.gridH || 1) * CELL_SIZE,
         }))
-        parsed.pens = (parsed.pens || []).map((pen, i) => ({
+        parsed.pens = (parsed.pens || []).map((pen) => ({
           ...pen,
-          gridX: pen.gridX ?? (6 + (i % 6)),
-          gridY: pen.gridY ?? Math.floor(i / 2),
-          gridW: 1,
-          gridH: 1,
+          x: pen.gridX * CELL_SIZE,
+          y: pen.gridY * CELL_SIZE,
+          w: (pen.gridW || 1) * CELL_SIZE,
+          h: (pen.gridH || 1) * CELL_SIZE,
         }))
       }
       if (!parsed.sections) {
