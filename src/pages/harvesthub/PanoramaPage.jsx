@@ -308,7 +308,7 @@ export default function PanoramaPage() {
   }, [navigate])
 
   return (
-    <div className="pt-24 px-4 md:px-8 lg:px-8 max-w-7xl mx-auto pb-12">
+    <div className="pt-16 px-4 md:ml-64 pb-12">
       {/* Map */}
       <section
         className="bg-[#f8f3ea] rounded-[2.5rem] p-4 border border-[#c2c9b9]/40 shadow-xl relative overflow-hidden"
